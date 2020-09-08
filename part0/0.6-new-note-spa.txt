@@ -1,0 +1,17 @@
+title 0.6: new note
+
+participant Browser as b
+participant Server as s
+note over b
+submit and then
+event handler runs to push 
+list item onto notes
+object
+end note
+b->s: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+
+s-->b: STATUS 201 response sent back with message created
+note over b
+Browser runs event handler and 
+prints to console
+end note

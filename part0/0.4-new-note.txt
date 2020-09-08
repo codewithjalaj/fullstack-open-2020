@@ -1,0 +1,31 @@
+title 0.4 : New Note
+
+browser->server: POST Request http://fullstack-exampleapp.herkuapp.com/new_note
+server->browser: Response Code 301
+note over browser:
+note object 
+found at /note
+end note
+browser->server: GET http://fullstack-exampleapp.herkuapp.com/notes
+server->browser: HTML & Response code 200
+note over browser:
+html code recieved
+end note
+browser->server: GET http://fullstack-exampleapp.herkuapp.com/main.css
+server->browser: main.css
+note over browser:
+styles recieved
+end note
+browser->server: GET http://fullstack-exampleapp.herkuapp.com/main.js
+server->browser: main.js
+note over browser:
+code executes and 
+browser sends 
+request to get json data
+end note
+browser->server: GET http://fullstack-exampleapp.herkuapp.com/data.json
+server->browser: [{note: ..., date: ...} ...]
+note over browser:
+brwser runs the event 
+handler and renders the list
+end note

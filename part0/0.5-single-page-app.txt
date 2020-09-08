@@ -1,0 +1,27 @@
+title 0.5: Single page app
+
+participant Browser as b
+participant Server as s
+
+b->s: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa
+s-->b: HTML - Code 200
+note over b
+HTML code recieved
+end note
+b->s: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+s-->b: main.css
+note over b
+styles received
+end note
+b->s: https://fullstack-exampleapp.herokuapp.com/spa.js
+s-->b: spa.js
+note over b
+Browserexecutes the
+file and send request for json data
+end note
+b->s: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+s-->b: [{"content":"...","date":"..."},...]
+note over b
+Browser runs event handler
+to render list items
+end note
