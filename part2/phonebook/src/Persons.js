@@ -8,8 +8,8 @@ const Persons = ({ persons, query }) => {
 		<>
 			{persons
 				.filter((person) => person.name.match(regex))
-				.map((person, idx) => (
-					<p key={idx}>
+				.map((person) => (
+					<p key={person.id}>
 						<Person person={person} />
 					</p>
 				))}
