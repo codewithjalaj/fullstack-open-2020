@@ -1,8 +1,11 @@
 import React from 'react';
+import phonebook from './services/phonebook';
 
 const Form = ({ persons, setPersons, newName, newNumber, setNewName, setNewNumber }) => {
 	const handleSubmit = (e) => {
 		e.preventDefault();
+
+		if (newName === '' || newNumber === '') return;
 
 		for (let person of persons) {
 			if (person.name === newName) {
@@ -10,9 +13,10 @@ const Form = ({ persons, setPersons, newName, newNumber, setNewName, setNewNumbe
 			}
 		}
 
-		if (newName === '' || newNumber === '') return;
+		const newEntry = { name: newName, number: newNumber };
 
-		setPersons(persons.concat({ name: newName, number: newNumber }));
+		phonebook.create(newEntry).then((entry) => setPersons(persons.concat(entry)));
+
 		setNewName('');
 		setNewNumber('');
 	};
