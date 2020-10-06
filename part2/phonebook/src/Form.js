@@ -1,26 +1,6 @@
 import React from 'react';
-import phonebook from './services/phonebook';
 
-const Form = ({ persons, setPersons, newName, newNumber, setNewName, setNewNumber }) => {
-	const handleSubmit = (e) => {
-		e.preventDefault();
-
-		if (newName === '' || newNumber === '') return;
-
-		for (let person of persons) {
-			if (person.name === newName) {
-				return alert(`${newName} is already added to the phonebook.`);
-			}
-		}
-
-		const newEntry = { name: newName, number: newNumber };
-
-		phonebook.create(newEntry).then((entry) => setPersons(persons.concat(entry)));
-
-		setNewName('');
-		setNewNumber('');
-	};
-
+const Form = ({ handleSubmit, newName, newNumber, setNewName, setNewNumber }) => {
 	return (
 		<form>
 			<div>

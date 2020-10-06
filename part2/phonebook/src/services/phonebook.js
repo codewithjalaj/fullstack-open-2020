@@ -11,4 +11,9 @@ const deleteEntry = (id) => {
 	return req.then((res) => res.data);
 };
 
-export default { create, deleteEntry };
+const updateEntry = (id, entry) => {
+	const req = Axios.put(`${baseUrl}/${id}`, entry);
+	return req.then((res) => res.data);
+};
+
+export default { create, deleteEntry, updateEntry };
