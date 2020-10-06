@@ -28,7 +28,7 @@ function App() {
 
 	// get weather data if there is only one country in state
 	useEffect(() => {
-		if (countries[0]) {
+		if (countries.length === 1 && countries[0]) {
 			const api_url = `http://api.weatherstack.com/current?access_key=${process.env.REACT_APP_W_API_KEY}&query=${countries[0].capital}`;
 			const fetchWeather = async () => {
 				const res = await Axios.get(api_url);
