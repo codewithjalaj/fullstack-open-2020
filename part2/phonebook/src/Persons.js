@@ -1,7 +1,7 @@
 import React from 'react';
 import Person from './Person';
 
-const Persons = ({ persons, query }) => {
+const Persons = ({ persons, query, handleDelete }) => {
 	let regex = new RegExp(query, 'gi');
 
 	return (
@@ -10,7 +10,7 @@ const Persons = ({ persons, query }) => {
 				.filter((person) => person.name.match(regex))
 				.map((person) => (
 					<p key={person.id}>
-						<Person person={person} />
+						<Person handleDelete={handleDelete} person={person} />
 					</p>
 				))}
 		</>

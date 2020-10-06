@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Filter from './Filter';
 import Form from './Form';
 import Persons from './Persons';
+import phonebook from './services/phonebook';
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
@@ -15,6 +16,12 @@ const App = () => {
 			setPersons(res.data);
 		});
 	}, []);
+
+	const handleDelete = (id, name) => {
+		if (window.confirm(`Delete ${name}?`)) {
+			phonebook.deleteEntry(id).then((_) => setPersons(persons.filter((person) => person.id !== id)));
+		}
+	};
 
 	return (
 		<div>
@@ -30,7 +37,7 @@ const App = () => {
 				setPersons={setPersons}
 			/>
 			<h3>Numbers</h3>
-			<Persons persons={persons} query={query} />
+			<Persons handleDelete={handleDelete} persons={persons} query={query} />
 		</div>
 	);
 };

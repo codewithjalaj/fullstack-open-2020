@@ -6,4 +6,9 @@ const create = (entry) => {
 	return req.then((res) => res.data);
 };
 
-export default { create };
+const deleteEntry = (id) => {
+	const req = Axios.delete(`${baseUrl}/${id}`);
+	return req.then((res) => res.data);
+};
+
+export default { create, deleteEntry };
