@@ -2,12 +2,12 @@
   "persons": [
     {
       "name": "Arto Hellas",
-      "number": "1212121212",
+      "number": "12-45-43434",
       "id": 1
     },
     {
       "name": "Ada Lovelace",
-      "number": "321123125",
+      "number": "32-45-124542",
       "id": 2
     },
     {
@@ -19,11 +19,6 @@
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
       "id": 4
-    },
-    {
-      "name": "jalaj",
-      "number": "12345",
-      "id": 5
     }
   ]
 }

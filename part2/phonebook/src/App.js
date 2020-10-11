@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Filter from './Filter';
 import Form from './Form';
 import Persons from './Persons';
+import Notification from './Notification';
 import phonebook from './services/phonebook';
 
 const App = () => {
@@ -10,6 +11,10 @@ const App = () => {
 	const [newName, setNewName] = useState('');
 	const [newNumber, setNewNumber] = useState('');
 	const [query, setQuery] = useState('');
+	const [notification, setNotification] = useState({
+		message: null,
+		type: '',
+	});
 
 	useEffect(() => {
 		Axios.get('http://localhost:3001/persons').then((res) => {
@@ -23,16 +28,47 @@ const App = () => {
 				const popup = window.confirm(
 					`${newName} is already added to the phonebook, replace the old number with a new one?`
 				);
-				let newEntry = {
-					name: person.name,
-					number: newNumber,
-				};
+
 				if (popup) {
-					phonebook.updateEntry(person.id, newEntry).then((updatedEntry) => {
-						setPersons(persons.map((person) => (person.id !== updatedEntry.id ? person : updatedEntry)));
-						setNewName('');
-						setNewNumber('');
+					let newEntry = {
+						name: person.name,
+						number: newNumber,
+					};
+					let id = person.id;
+					phonebook
+						.updateEntry(id, newEntry)
+						.then((updatedEntry) => {
+							setPersons(persons.map((person) => (person.id !== id ? person : updatedEntry)));
+							setNewName('');
+							setNewNumber('');
+						})
+						.catch((error) => {
+							setNotification({
+								message: `Entry for ${newName} has already ben deleted from server.`,
+								type: 'error',
+							});
+
+							setTimeout(() => {
+								setNotification({
+									message: null,
+									type: '',
+								});
+							}, 5000);
+
+							setPersons(persons.filter((person) => person.id !== id));
+						});
+
+					setNotification({
+						message: `Updated ${newName}`,
+						type: 'success',
 					});
+
+					setTimeout(() => {
+						setNotification({
+							message: null,
+							type: '',
+						});
+					}, 5000);
 				}
 				return true;
 			}
@@ -52,7 +88,16 @@ const App = () => {
 		let newEntry = { name: newName, number: newNumber };
 
 		phonebook.create(newEntry).then((entry) => setPersons(persons.concat(entry)));
-
+		setNotification({
+			message: `Added ${newName}`,
+			type: 'success',
+		});
+		setTimeout(() => {
+			setNotification({
+				message: null,
+				type: '',
+			});
+		}, 5000);
 		setNewName('');
 		setNewNumber('');
 	};
@@ -66,6 +111,7 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
+			<Notification message={notification.message} type={notification.type} />
 			<Filter setQuery={setQuery} />
 			<h3>Add a new:</h3>
 			<Form
