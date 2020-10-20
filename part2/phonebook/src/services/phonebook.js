@@ -1,5 +1,10 @@
 import Axios from 'axios';
-const baseUrl = `https://peaceful-ocean-54020.herokuapp.com/api/persons`;
+const baseUrl = `/api/persons`;
+
+const getAllPersons = () => {
+	const req = Axios.get(baseUrl);
+	return req.then((res) => res.data);
+};
 
 const create = (entry) => {
 	const req = Axios.post(baseUrl, entry);
@@ -16,4 +21,4 @@ const updateEntry = (id, entry) => {
 	return req.then((res) => res.data);
 };
 
-export default { create, deleteEntry, updateEntry };
+export default { getAllPersons, create, deleteEntry, updateEntry };

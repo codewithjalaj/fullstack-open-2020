@@ -1,10 +1,9 @@
-import Axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Filter from './Filter';
 import Form from './Form';
 import Persons from './Persons';
 import Notification from './Notification';
-import phonebook from './services/phonebook';
+import phonebookService from './services/phonebook';
 
 const App = () => {
 	const [persons, setPersons] = useState([]);
@@ -17,62 +16,21 @@ const App = () => {
 	});
 
 	useEffect(() => {
-		Axios.get(`https://peaceful-ocean-54020.herokuapp.com/api/persons`).then((res) => {
-			setPersons(res.data);
-		});
+		phonebookService.getAllPersons().then((persons) => setPersons(persons));
 	}, []);
 
-	const checkDuplicate = () => {
-		for (let person of persons) {
-			if (person.name === newName) {
-				const popup = window.confirm(
-					`${newName} is already added to the phonebook, replace the old number with a new one?`
-				);
+	const notify = (message, type) => {
+		setNotification({
+			message,
+			type,
+		});
 
-				if (popup) {
-					let newEntry = {
-						name: person.name,
-						number: newNumber,
-					};
-					let id = person.id;
-					phonebook
-						.updateEntry(id, newEntry)
-						.then((updatedEntry) => {
-							setPersons(persons.map((person) => (person.id !== id ? person : updatedEntry)));
-							setNewName('');
-							setNewNumber('');
-						})
-						.catch((error) => {
-							setNotification({
-								message: `Entry for ${newName} has already ben deleted from server.`,
-								type: 'error',
-							});
-
-							setTimeout(() => {
-								setNotification({
-									message: null,
-									type: '',
-								});
-							}, 5000);
-
-							setPersons(persons.filter((person) => person.id !== id));
-						});
-
-					setNotification({
-						message: `Updated ${newName}`,
-						type: 'success',
-					});
-
-					setTimeout(() => {
-						setNotification({
-							message: null,
-							type: '',
-						});
-					}, 5000);
-				}
-				return true;
-			}
-		}
+		setTimeout(() => {
+			setNotification({
+				message: null,
+				type: '',
+			});
+		}, 5000);
 	};
 
 	const handleSubmit = (e) => {
@@ -80,31 +38,57 @@ const App = () => {
 
 		if (newName === '' || newNumber === '') return;
 
-		const duplicate = checkDuplicate();
+		const personExists = persons.find((person) => person.name === newName);
 
-		// if the entry is duplicate return early.
-		if (duplicate) return;
+		if (personExists) {
+			const popup = window.confirm(
+				`${newName} is already added to the phonebook, replace the old number with a new one?`
+			);
 
-		let newEntry = { name: newName, number: newNumber };
+			if (popup) {
+				let newEntry = {
+					name: personExists.name,
+					number: newNumber,
+				};
+				let id = personExists.id;
+				phonebookService
+					.updateEntry(id, newEntry)
+					.then((updatedEntry) => {
+						setPersons(persons.map((person) => (person.id !== id ? person : updatedEntry)));
+						setNewName('');
+						setNewNumber('');
+					})
+					.catch((error) => {
+						notify(`Entry for ${newName} had already been deleted from server`, 'error');
+						setPersons(persons.filter((person) => person.id !== id));
+					});
 
-		phonebook.create(newEntry).then((entry) => setPersons(persons.concat(entry)));
-		setNotification({
-			message: `Added ${newName}`,
-			type: 'success',
-		});
-		setTimeout(() => {
-			setNotification({
-				message: null,
-				type: '',
+				notify(`Updated ${newName}`, 'success');
+			}
+		} else {
+			let newEntry = { name: newName, number: newNumber };
+
+			phonebookService.create(newEntry).then((entry) => {
+				setPersons(persons.concat(entry));
+				notify(`Added ${newName} to the phonebook`, 'success');
+				setNewName('');
+				setNewNumber('');
 			});
-		}, 5000);
-		setNewName('');
-		setNewNumber('');
+		}
 	};
 
 	const handleDelete = (id, name) => {
 		if (window.confirm(`Delete ${name}?`)) {
-			phonebook.deleteEntry(id).then((_) => setPersons(persons.filter((person) => person.id !== id)));
+			phonebookService
+				.deleteEntry(id)
+				.then((_res) => {
+					setPersons(persons.filter((person) => person.id !== id));
+					notify(`Deleted Successfully!`, 'success');
+				})
+				.catch((_err) => {
+					setPersons(persons.filter((p) => p.id !== id));
+					notify(`${name} had already been deleted from server`, 'error');
+				});
 		}
 	};
 
