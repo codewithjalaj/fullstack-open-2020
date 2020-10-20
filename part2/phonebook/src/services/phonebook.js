@@ -1,5 +1,5 @@
 import Axios from 'axios';
-const baseUrl = 'http://localhost:3001/persons';
+const baseUrl = `https://peaceful-ocean-54020.herokuapp.com/api/persons`;
 
 const create = (entry) => {
 	const req = Axios.post(baseUrl, entry);

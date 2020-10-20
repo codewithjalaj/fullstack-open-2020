@@ -17,7 +17,7 @@ const App = () => {
 	});
 
 	useEffect(() => {
-		Axios.get('http://localhost:3001/persons').then((res) => {
+		Axios.get(`https://peaceful-ocean-54020.herokuapp.com/api/persons`).then((res) => {
 			setPersons(res.data);
 		});
 	}, []);
