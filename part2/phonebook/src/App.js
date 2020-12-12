@@ -30,7 +30,7 @@ const App = () => {
 				message: null,
 				type: '',
 			});
-		}, 5000);
+		}, 6000);
 	};
 
 	const handleSubmit = (e) => {
@@ -54,12 +54,14 @@ const App = () => {
 				phonebookService
 					.updateEntry(id, newEntry)
 					.then((updatedEntry) => {
+						console.log(updatedEntry);
 						setPersons(persons.map((person) => (person.id !== id ? person : updatedEntry)));
 						setNewName('');
 						setNewNumber('');
 					})
 					.catch((error) => {
-						notify(`Entry for ${newName} had already been deleted from server`, 'error');
+						console.log('hi i am error', error.response.data);
+						notify(error.response.data.error, 'error');
 						setPersons(persons.filter((person) => person.id !== id));
 					});
 
@@ -85,7 +87,8 @@ const App = () => {
 					setPersons(persons.filter((person) => person.id !== id));
 					notify(`Deleted Successfully!`, 'success');
 				})
-				.catch((_err) => {
+				.catch((error) => {
+					console.log(error);
 					setPersons(persons.filter((p) => p.id !== id));
 					notify(`${name} had already been deleted from server`, 'error');
 				});
